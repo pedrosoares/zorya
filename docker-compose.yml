@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  rustapache:
+    build: .
+    volumes:
+      - ./target/debug:/var/www/html/:z
+      - ./storage:/var/www/html/storage/:z
+    environment:
+      DATABASE_URI: "postgresql://postgres:example@postgres_database:5432"
+    ports:
+      - '80:80'
+
+  postgres_database:
+    image: postgres:13
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - '5432:5432'
