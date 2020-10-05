@@ -5,9 +5,9 @@ use gato_core::kernel::Logger;
 use crate::app::services::user_service;
 use crate::app::entities::Auth;
 
-pub fn authenticate(email: String, password: String) -> Option<Auth> {
-    if email != "" && password != "" {
-        let user = user_service::find_by_email(email.to_string());
+pub fn authenticate(project: String, email: String, password: String) -> Option<Auth> {
+    if project != "" && email != "" && password != "" {
+        let user = user_service::find_by_email(project, email.clone());
         match user {
             Some(user) => {
                 let matches = verify(password, user.password.as_str()).unwrap_or(false);

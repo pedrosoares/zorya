@@ -16,12 +16,13 @@ fn get_connection() -> Option<Connection> {
     }
 }
 
-pub fn find_by_email(email: String) -> Option<User> {
+pub fn find_by_email(project: String, email: String) -> Option<User> {
     let res_conn = get_connection();
     match res_conn {
         Some(conn) => {
-            let query = conn.query("SELECT id, name, email, password FROM users WHERE email=$1;", &[
-                &email
+            let sql = "SELECT id, name, email, password FROM users WHERE email=$1 and project=$2;";
+            let query = conn.query(sql, &[
+                &email, &project
             ]);
             if query.is_ok() {
                 for row in &query.unwrap() {

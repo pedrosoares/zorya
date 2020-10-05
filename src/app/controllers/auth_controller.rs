@@ -8,10 +8,11 @@ pub struct AuthController {}
 impl AuthController {
 
     pub fn login(request: &Request) -> Response {
+        let project = request.get_param("project", "");
         let email = request.get("email".to_owned()).as_str().unwrap_or("").to_string();
         let password = request.get("password".to_owned()).as_str().unwrap_or("").to_string();
 
-        return match auth_service::authenticate(email, password) {
+        return match auth_service::authenticate(project, email, password) {
             Some(token) => {
                 Response::json(json!({
                     "expiration": token.exp,
@@ -20,7 +21,11 @@ impl AuthController {
                 }))
             },
             None => {
-                let mut response = Response::json(json!({"error": "Internal server error!"}));
+                let mut response = Response::json(json!({
+                    "errors": [
+                        "Email or Password are incorrect!"
+                    ]
+                }));
                 response.set_code(401);
                 response
             }
