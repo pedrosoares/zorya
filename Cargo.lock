@@ -186,9 +186,9 @@ dependencies = [
 
 [[package]]
 name = "gato-core"
-version = "0.4.1"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d52dd8baa1144638ae52f5b9e3ccb0bf65aca0da42a1c8df26c10232999884eb"
+checksum = "57ca9d7a4c532f3bf42af4f86acaa418822fd6246e0233c11f3745ba773c6037"
 dependencies = [
  "chrono",
  "lazy_static",
