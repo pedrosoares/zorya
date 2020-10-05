@@ -32,10 +32,18 @@ impl AuthController {
         if headers.contains_key("Authorization") {
             let token =  headers["Authorization"].replace("Bearer ", "");
             if auth_service::validate(token.as_str()) {
-                return Response::new("ok");
+                return Response::json(json!({
+                    "success": "User is authenticated"
+                }));
             }
         }
-        return Response::new("not ok");
+        let mut response = Response::json(json!({
+            "errors": [
+                "User is not authenticated"
+            ]
+        }));
+        response.set_code(401);
+        return response;
     }
 
     pub fn register(request: &Request) -> Response {
@@ -45,6 +53,10 @@ impl AuthController {
             Some(hashed) => Response::json(json!({ "hash": hashed })),
             None => Response::json(json!({ "error": "Password cannot be empty" }))
         }
+    }
+
+    pub fn token_generate(_request: &Request) -> Response {
+        return Response::new("");
     }
 
 }
