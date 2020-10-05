@@ -40,10 +40,7 @@ pub fn validate(token: &str) -> bool {
         return user.is_some();
     }
 
-    match res_token.err() {
-        Some(err) => Logger::error(err.to_string().as_str()),
-        None => {}
-    }
+    res_token.err().and_then(|err| Some(Logger::error(err.to_string().as_str())));
 
     return false;
 }
