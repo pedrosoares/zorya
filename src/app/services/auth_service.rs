@@ -1,9 +1,35 @@
 use bcrypt::{hash, verify};
-use jsonwebtoken::{encode, decode, Header, Validation, EncodingKey, DecodingKey};
 use chrono::{Duration, Utc};
 use gato_core::kernel::Logger;
-use crate::app::services::user_service;
+use jsonwebtoken::{encode, decode, Header, Validation, EncodingKey, DecodingKey};
 use crate::app::entities::Auth;
+use crate::app::helpers::string_helper::jwt;
+use crate::app::services::{application_service, user_service};
+
+pub fn generate_token(project: String, email: String, password: String) -> Option<Auth> {
+    if project != "" && email != "" && password != "" {
+        let user = application_service::find_by_email(&project, &email);
+        return match user {
+            Some(user) => {
+                let matches = verify(password, user.password.as_str()).unwrap_or(false);
+                if matches {
+                    let now = Utc::now() + Duration::days(99999);
+                    let mut auth = Auth::new(email.as_str(), now, "");
+                    let token = jwt(&auth);
+
+                    auth.token = token.clone();
+
+                    if user_service::save_token(&auth) {
+                        return Some(auth);
+                    }
+                }
+                return None;
+            },
+            None => None
+        }
+    }
+    return None;
+}
 
 pub fn authenticate(project: String, email: String, password: String) -> Option<Auth> {
     if project != "" && email != "" && password != "" {

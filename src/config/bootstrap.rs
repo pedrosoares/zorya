@@ -8,7 +8,7 @@ pub fn boot(service_provider: &mut ServiceProvider) -> () {
     service_provider.register_provider(ApacheServiceProvider::new());
     service_provider.register_provider(SimpleRouterServiceProvider::new());
 
-    SimpleRouter::get("/", &|_request| Response::json(json!({ "api": "0.0.0" })));
+    SimpleRouter::get("/", &|_request| Response::new().json(json!({ "api": "0.0.0" })));
 
     SimpleRouter::post("/{project}/jwt/auth", &AuthController::login);
     SimpleRouter::post("/{project}/jwt/auth/register", &AuthController::register);

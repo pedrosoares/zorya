@@ -109,9 +109,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.0.60"
+version = "1.0.61"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ef611cc68ff783f18535d77ddd080185275713d852c4f5cbb6122c462a7a825c"
+checksum = "ed67cbde08356238e75fc4656be4749481eeffb09e19f320a25237d5221c985d"
 
 [[package]]
 name = "cfg-if"
@@ -177,18 +177,18 @@ checksum = "a06f77d526c1a601b7c4cdd98f54b5eaabffc14d5f2f0296febdc7f357c6d3ba"
 
 [[package]]
 name = "gato-apache-cgi"
-version = "0.4.1"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cf6a876dcb7455f4969499c6153ffbd3437986116eac87a080e8fa9c094c4923"
+checksum = "5e0878e2cee4ef8dcd34d73f4103f79b41de326637417d3c205be91ef82a34f8"
 dependencies = [
  "gato-core",
 ]
 
 [[package]]
 name = "gato-core"
-version = "0.4.2"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "57ca9d7a4c532f3bf42af4f86acaa418822fd6246e0233c11f3745ba773c6037"
+checksum = "e92b66892e2080628d6608a72cf0e4808ea52002bcc42116b56d4aab44e28854"
 dependencies = [
  "chrono",
  "lazy_static",
@@ -198,9 +198,9 @@ dependencies = [
 
 [[package]]
 name = "gato-simple-router"
-version = "0.4.3"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "02381011525138972e8f6831107ef5e6f7b2f984861cdc9bd43f5fd9db72887b"
+checksum = "e330accf06ab8d5fb310b53cb26ae1a757b4bb88c9249ca64a41a9860a959e19"
 dependencies = [
  "gato-core",
  "serde_json",
@@ -298,9 +298,9 @@ checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
-version = "0.2.78"
+version = "0.2.79"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "aa7087f49d294270db4e1928fc110c976cd4b9e5a16348e0a1df09afa99e6c98"
+checksum = "2448f6066e80e3bfc792e9c98bf705b4b0fc6e8ef5b43e5889aff0eaa9c58743"
 
 [[package]]
 name = "log"
@@ -660,9 +660,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.42"
+version = "1.0.43"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c51d92969d209b54a98397e1b91c8ae82d8c87a7bb87df0b29aa2ad81454228"
+checksum = "1e2e59c50ed8f6b050b071aa7b6865293957a9af6b58b94f97c1c9434ad440ea"
 dependencies = [
  "proc-macro2",
  "quote",

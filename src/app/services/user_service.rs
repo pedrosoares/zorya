@@ -1,23 +1,9 @@
-use std::env;
-use postgres::{Connection, TlsMode};
 use crate::app::entities::{User, Auth};
 use gato_core::kernel::Logger;
-
-fn get_connection() -> Option<Connection> {
-    let postgres_uri = env::var("DATABASE_URI")
-        .unwrap_or("postgresql://postgres:example@postgres_database:5432".to_owned());
-    let res_conn = Connection::connect(postgres_uri, TlsMode::None);
-    return match res_conn {
-        Ok(conn) => Some(conn),
-        Err(err) => {
-            Logger::error(err.to_string().as_str());
-            None
-        }
-    }
-}
+use crate::app::helpers::postgres_helper;
 
 pub fn find_by_email(project: String, email: String) -> Option<User> {
-    let res_conn = get_connection();
+    let res_conn = postgres_helper::get_connection();
     match res_conn {
         Some(conn) => {
             let sql = "SELECT id, name, email, password FROM users WHERE email=$1 and project=$2;";
@@ -42,33 +28,29 @@ pub fn find_by_email(project: String, email: String) -> Option<User> {
 }
 
 pub fn find_by_token(token: String) -> Option<User> {
-    let res_conn = get_connection();
-    match res_conn {
-        Some(conn) => {
-            let sql = "SELECT u.id, u.name, u.email, u.password FROM users u \n\
-              join tokens t2 on t2.email = u.email \n\
-              where t2.\"token\" = $1;";
-
-            let query = conn.query(sql, &[ &token ]);
-            if query.is_ok() {
-                for row in &query.unwrap() {
-                    let id: i32 = row.get(0);
-                    return Some(User::new(
-                        id.to_string(),
-                        row.get(1),
-                        row.get(2),
-                        row.get(3)
-                    ));
-                }
-            }
-        },
-        None => {}
+    let sql = "select  \n\
+            coalesce(u.id,a.id), coalesce(u.name, a.name), coalesce(u.email, a.email), coalesce(u.password, a.password)  \n\
+        from tokens t  \n\
+        left join users u on t.email = u.email \n\
+        left join apis a on t.email = a.email \n\
+        where t.\"token\" = $1;";
+    let tokens = postgres_helper::select(sql, &[ &token ]);
+    if tokens.is_some() {
+        for row in &tokens.unwrap() {
+            let id: i32 = row.get(0);
+            return Some(User::new(
+                id.to_string(),
+                row.get(1),
+                row.get(2),
+                row.get(3)
+            ));
+        }
     }
     return None;
 }
 
 pub fn save_token(auth: &Auth) -> bool {
-    let res_conn = get_connection();
+    let res_conn = postgres_helper::get_connection();
     match res_conn {
         Some(conn) => {
             let exp = auth.exp as i64;
