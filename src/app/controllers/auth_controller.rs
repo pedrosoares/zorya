@@ -31,6 +31,28 @@ impl AuthController {
         }
     }
 
+    pub fn logout(request: &Request) -> Response {
+        return match auth_service::get_user(request.get_headers()) {
+            Some(user) => {
+                if auth_service::logout(&user) {
+                    return Response::new().status(200).json(json!({
+                        "success": "Logout successfully"
+                    }));
+                }
+                return Response::new().status(500).json(json!({
+                    "errors": [
+                        "Something went wrong"
+                    ]
+                }));
+            },
+            None => Response::new().status(401).json(json!({
+                "errors": [
+                    "User is not authenticated"
+                ]
+            }))
+        };
+    }
+
     pub fn is_authenticated(request: &Request) -> Response {
         let headers = request.get_headers();
         if headers.contains_key("Authorization") {
@@ -38,6 +60,25 @@ impl AuthController {
             if auth_service::validate(token.as_str()) {
                 return Response::new().json(json!({
                     "success": "User is authenticated"
+                }));
+            }
+        }
+        return Response::new().status(401).json(json!({
+            "errors": [
+                "User is not authenticated"
+            ]
+        }));
+    }
+
+    pub fn get_user(request: &Request) -> Response {
+        let headers = request.get_headers();
+        if headers.contains_key("Authorization") {
+            let token =  headers["Authorization"].replace("Bearer ", "");
+            let user = auth_service::get_user_from_token(token.as_str());
+            if user.is_ok() {
+                return Response::new().json(json!({
+                    "success": "User is authenticated",
+                    "user": user.unwrap()
                 }));
             }
         }
@@ -56,6 +97,9 @@ impl AuthController {
         }
     }
 
+    /**
+    *   Authenticate using  UNLIMITED token Lifetime, generally used API to API communication
+    */
     pub fn token_generate(request: &Request) -> Response {
         let project = request.get_param("project").unwrap_or(s(""));
         let email = request.get("email").as_str().unwrap_or("").to_string();

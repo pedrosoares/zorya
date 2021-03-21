@@ -212,6 +212,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a06f77d526c1a601b7c4cdd98f54b5eaabffc14d5f2f0296febdc7f357c6d3ba"
 
 [[package]]
+name = "gato-apache-cgi"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e0878e2cee4ef8dcd34d73f4103f79b41de326637417d3c205be91ef82a34f8"
+dependencies = [
+ "gato-core",
+]
+
+[[package]]
 name = "gato-core"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -921,6 +930,7 @@ version = "0.1.0"
 dependencies = [
  "bcrypt",
  "chrono",
+ "gato-apache-cgi",
  "gato-core",
  "gato-lambda",
  "gato-simple-router",

@@ -6,13 +6,13 @@ pub fn find_by_email(project: String, email: String) -> Option<User> {
     let res_conn = postgres_helper::get_connection();
     match res_conn {
         Some(conn) => {
-            let sql = "SELECT id, name, email, password FROM users WHERE email=$1 and project=$2;";
+            let sql = "SELECT id, name, email, password FROM zorya.users WHERE email=$1 and project=$2;";
             let query = conn.query(sql, &[
                 &email, &project
             ]);
             if query.is_ok() {
                 for row in &query.unwrap() {
-                    let id: i32 = row.get(0);
+                    let id: i64 = row.get(0);
                     return Some(User::new(
                         id.to_string(),
                         row.get(1),
@@ -30,14 +30,14 @@ pub fn find_by_email(project: String, email: String) -> Option<User> {
 pub fn find_by_token(token: String) -> Option<User> {
     let sql = "select  \n\
             coalesce(u.id,a.id), coalesce(u.name, a.name), coalesce(u.email, a.email), coalesce(u.password, a.password)  \n\
-        from tokens t  \n\
-        left join users u on t.email = u.email \n\
-        left join apis a on t.email = a.email \n\
+        from zorya.tokens t  \n\
+        left join zorya.users u on t.email = u.email \n\
+        left join zorya.apis a on t.email = a.email \n\
         where t.\"token\" = $1;";
     let tokens = postgres_helper::select(sql, &[ &token ]);
     if tokens.is_some() {
         for row in &tokens.unwrap() {
-            let id: i32 = row.get(0);
+            let id: i64 = row.get(0);
             return Some(User::new(
                 id.to_string(),
                 row.get(1),
@@ -54,7 +54,7 @@ pub fn save_token(auth: &Auth) -> bool {
     match res_conn {
         Some(conn) => {
             let exp = auth.exp as i64;
-            let sql = "INSERT INTO tokens (expiration, email, \"token\") \n\
+            let sql = "INSERT INTO zorya.tokens (expiration, email, \"token\") \n\
                 VALUES($1, $2, $3) \n\
                 ON CONFLICT (email) \n\
                 DO \n\
@@ -72,4 +72,21 @@ pub fn save_token(auth: &Auth) -> bool {
         None => {}
     }
     return false;
+}
+
+pub fn delete_by_user(user: &User) -> bool {
+    let res_conn = postgres_helper::get_connection();
+    return match res_conn {
+        Some(conn) => {
+            let sql = "DELETE FROM zorya.tokens WHERE email = $1;";
+            return match conn.execute(sql, &[ &user.email ]) {
+                Ok(_e) => true,
+                Err(err) => {
+                    Logger::error(err.to_string().as_str());
+                    false
+                }
+            }
+        },
+        None => false
+    };
 }
