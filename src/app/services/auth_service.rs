@@ -73,6 +73,14 @@ pub fn authenticate(project: String, email: String, password: String) -> Option<
     return None;
 }
 
+pub fn register(name: String, project: String, email: String, password: String) -> bool {
+    if name != "" && project != "" && email != "" && password != "" {
+        let user = user_service::insert_user(name, project, email, password);
+        return user.is_some();
+    }
+    return false;
+}
+
 pub fn get_user_from_token(token: &str) -> Result<User, &str> {
     let key = &DecodingKey::from_secret("secret".as_ref());
     let validation = Validation::default();

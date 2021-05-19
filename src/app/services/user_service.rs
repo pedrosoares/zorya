@@ -2,6 +2,30 @@ use crate::app::entities::{User, Auth};
 use gato_core::kernel::Logger;
 use crate::app::helpers::postgres_helper;
 
+pub fn insert_user(name: String, project: String, email: String, password: String) -> Option<User> {
+    return match postgres_helper::get_connection() {
+        Some(conn) => {
+            let sql = "INSERT INTO zorya.users (name, email, password, project) VALUES ($1, $2, $3, $4) RETURNING *;";
+            let query = conn.query(sql, &[
+                &name, &email, &password, &project
+            ]);
+            if query.is_ok() {
+                for row in &query.unwrap() {
+                    let id: i64 = row.get(0);
+                    return Some(User::new(
+                        id.to_string(),
+                        row.get(1),
+                        row.get(2),
+                        row.get(3)
+                    ));
+                }
+            }
+            return None;
+        },
+        None => None
+    };
+}
+
 pub fn find_by_email(project: String, email: String) -> Option<User> {
     let res_conn = postgres_helper::get_connection();
     match res_conn {

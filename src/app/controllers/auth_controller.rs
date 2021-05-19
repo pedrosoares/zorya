@@ -90,10 +90,19 @@ impl AuthController {
     }
 
     pub fn register(request: &Request) -> Response {
+        let project = request.get_param("project").unwrap_or(s(""));
+        let name = request.get("name").as_str().unwrap_or("").to_string();
+        let email = request.get("email").as_str().unwrap_or("").to_string();
         let password = request.get("password").as_str().unwrap_or("").to_string();
         return match auth_service::hash_password(password.as_str()) {
-            Some(hashed) => Response::new().json(json!({ "hash": hashed })),
-            None => Response::new().json(json!({ "error": "Password cannot be empty" }))
+            Some(hashed) => {
+                return if auth_service::register(name, project, email, hashed) {
+                    Response::new().json(json!({ "success": "User created successfully" }))
+                } else {
+                    Response::new().status(500).json(json!({ "error": "Internal server error" }))
+                }
+            },
+            None => Response::new().status(401).json(json!({ "error": "Password cannot be empty" }))
         }
     }
 
