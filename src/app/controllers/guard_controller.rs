@@ -13,7 +13,7 @@ impl GuardController {
             if user.is_some() {
                 let permission = guard_service::find_permission(
                     request.get_param("permission").unwrap_or("".to_owned()),
-                    user.unwrap().id.parse::<i32>().unwrap(),
+                    user.unwrap().id,
                     request.get_param("project").unwrap_or("".to_owned()),
                 );
                 if permission {

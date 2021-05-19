@@ -6,9 +6,8 @@ pub fn find_by_email(project: &String, email: &String) -> Option<User> {
     let apis = postgres_helper::select(sql, &[ &email, &project ]);
     if apis.is_some() {
         for row in &apis.unwrap() {
-            let id: i32 = row.get(0);
             return Some(User::new(
-                id.to_string(),
+                row.get(0),
                 row.get(1),
                 row.get(2),
                 row.get(3)

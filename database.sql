@@ -1,7 +1,9 @@
 create schema zorya;
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 create table zorya.users (
-    id bigserial not null primary key,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     name varchar(100) not null,
     email varchar(200) not null,
     password varchar(100) not null,
@@ -11,7 +13,7 @@ create table zorya.users (
 );
 
 create table zorya.apis (
-    id bigserial not null primary key,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     name varchar(100) not null,
     email varchar(200) not null,
     password varchar(100) not null,

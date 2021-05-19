@@ -1,8 +1,9 @@
+use uuid::Uuid;
 use serde::{Serialize, Deserialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct User {
-    pub id: String,
+    pub id: Uuid,
     pub name: String,
     pub email: String,
     #[serde(skip)]
@@ -10,7 +11,7 @@ pub struct User {
 }
 
 impl User {
-    pub fn new(id: String, name: String, email: String, password: String) -> User {
+    pub fn new(id: Uuid, name: String, email: String, password: String) -> User {
         return User {
             id, name, email, password
         };

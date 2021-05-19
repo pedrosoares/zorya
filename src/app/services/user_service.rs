@@ -11,9 +11,8 @@ pub fn insert_user(name: String, project: String, email: String, password: Strin
             ]);
             if query.is_ok() {
                 for row in &query.unwrap() {
-                    let id: i64 = row.get(0);
                     return Some(User::new(
-                        id.to_string(),
+                        row.get(0),
                         row.get(1),
                         row.get(2),
                         row.get(3)
@@ -36,9 +35,8 @@ pub fn find_by_email(project: String, email: String) -> Option<User> {
             ]);
             if query.is_ok() {
                 for row in &query.unwrap() {
-                    let id: i64 = row.get(0);
                     return Some(User::new(
-                        id.to_string(),
+                        row.get(0),
                         row.get(1),
                         row.get(2),
                         row.get(3)
@@ -61,9 +59,8 @@ pub fn find_by_token(token: String) -> Option<User> {
     let tokens = postgres_helper::select(sql, &[ &token ]);
     if tokens.is_some() {
         for row in &tokens.unwrap() {
-            let id: i64 = row.get(0);
             return Some(User::new(
-                id.to_string(),
+                row.get(0),
                 row.get(1),
                 row.get(2),
                 row.get(3)
