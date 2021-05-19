@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  rustapache:
+    image: messense/rust-musl-cross:x86_64-musl
+    working_dir: /app
+    volumes:
+      - ./:/app
+    #command: tail -f /app/target/debug/.cargo-lock
+    #command: sh -c "apk add openssl-dev musl-dev; cargo build;"
+    command: sh -c "cargo build;"

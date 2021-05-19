@@ -3,7 +3,10 @@ version: '3'
 services:
   rustapache:
     build: .
+    container_name: zorya
+    working_dir: /app
     volumes:
+      - ./:/app
       - ./target/debug:/var/www/html/:z
       - ./storage:/var/www/html/storage/:z
     environment:
@@ -13,6 +16,7 @@ services:
 
   postgres_database:
     image: postgres:13
+    container_name: zorya-postgres
     environment:
       POSTGRES_PASSWORD: example
     ports:

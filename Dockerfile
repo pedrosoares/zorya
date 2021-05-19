@@ -1,4 +1,5 @@
-FROM debian
+FROM rust:buster
+#FROM debian
 
 ## Install Base Packages
 RUN apt-get update && apt-get -y install \
@@ -28,6 +29,7 @@ RUN echo '<VirtualHost *:80> \n\
    <Directory "/var/www/html/"> \n\
        SetEnvIf Content-Type "(.+)" HTTP_CONTENT_TYPE=$1 \n\
        SetEnvIf Authorization "(.+)" HTTP_AUTHORIZATION=$1 \n\
+       PassEnv IS_AWS_LAMBDA DATABASE_URI \n\
        Options +ExecCGI \n\
        <FilesMatch "^[^\.]+$"> \n\
          SetHandler cgi-script \n\
@@ -43,6 +45,13 @@ RUN echo '<VirtualHost *:80> \n\
    </Directory> \n\
 </VirtualHost> \n\
 ' > /etc/apache2/sites-available/000-default.conf
+
+RUN mkdir /app
+
+COPY ./ /app/
+COPY ./storage /var/www/html/storage
+
+RUN sh -c "cd /app; cargo build; cp -r ./target/debug/* /var/www/html/;"
 
 EXPOSE 80
 
